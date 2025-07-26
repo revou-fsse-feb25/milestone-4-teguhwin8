@@ -6,7 +6,6 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -27,14 +26,15 @@ model Account {
   id           Int           @id @default(autoincrement())
   user         User          @relation(fields: [userId], references: [id])
   userId       Int
-  balance      Float         @default(0)
+  balance      Float         @default(0) // Amount in Indonesian Rupiah (IDR)
   transactions Transaction[]
+  createdAt    DateTime      @default(now())
 }
 
 model Transaction {
   id        Int      @id @default(autoincrement())
-  type      String
-  amount    Float
+  type      String // DEPOSIT, WITHDRAWAL, TRANSFER_IN, TRANSFER_OUT
+  amount    Float // Amount in Indonesian Rupiah (IDR)
   account   Account  @relation(fields: [accountId], references: [id])
   accountId Int
   createdAt DateTime @default(now())

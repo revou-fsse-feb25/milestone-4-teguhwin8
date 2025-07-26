@@ -75,6 +75,9 @@ cp .env.example .env
 npx prisma generate
 npx prisma migrate dev --name init
 
+# Seed database with dummy data (Indonesian users & Rupiah amounts)
+npx prisma db seed
+
 # Start development server
 npm run start:dev
 ```
@@ -135,8 +138,24 @@ curl http://localhost:3000/
 # Register user
 curl -X POST http://localhost:3000/auth/register \
   -H "Content-Type: application/json" \
-  -d '{"email":"test@example.com","password":"password123","name":"Test User"}'
+  -d '{"email":"budi.santoso@gmail.com","password":"password123","name":"Budi Santoso"}'
+
+# Login with seeded user
+curl -X POST http://localhost:3000/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"budi.santoso@gmail.com","password":"password123"}'
 ```
+
+### 🇮🇩 Test Credentials (Seeded Data)
+
+After running `npx prisma db seed`, you can use these Indonesian test accounts:
+
+| Email                      | Password      | Name           | Account Balance (IDR)       |
+| -------------------------- | ------------- | -------------- | --------------------------- |
+| `budi.santoso@gmail.com`   | `password123` | Budi Santoso   | Rp 5.000.000 + Rp 1.500.000 |
+| `sari.wijaya@gmail.com`    | `password123` | Sari Wijaya    | Rp 3.250.000                |
+| `agus.pratama@gmail.com`   | `password123` | Agus Pratama   | Rp 8.750.000                |
+| `admin.revobank@gmail.com` | `password123` | Admin RevoBank | Rp 50.000.000               |
 
 ## 🗄️ Database Setup
 
@@ -150,18 +169,19 @@ curl -X POST http://localhost:3000/auth/register \
    GRANT ALL PRIVILEGES ON DATABASE revobank TO revouser;
    ```
 3. **Update DATABASE_URL** in `.env`
-4. **Run Migrations**:
+4. **Run Migrations & Seed**:
    ```bash
    npx prisma migrate dev --name init
+   npx prisma db seed
    ```
 
 ### Database Schema
 
 Current schema includes:
 
-- **Users** - User account information
-- **Accounts** - Bank account details (ready for implementation)
-- **Transactions** - Transaction history (ready for implementation)
+- **Users** - User account information with Indonesian test data
+- **Accounts** - Bank account details with Rupiah balances
+- **Transactions** - Transaction history with Indonesian currency amounts
 
 See [prisma/schema.prisma](prisma/schema.prisma) for complete schema definition.
 
@@ -237,6 +257,7 @@ npm run start:prod         # Start production build
 # Database
 npx prisma generate        # Generate Prisma client
 npx prisma migrate dev     # Run database migrations
+npx prisma db seed         # Seed database with Indonesian dummy data
 npx prisma studio          # Open Prisma Studio
 
 # Code Quality

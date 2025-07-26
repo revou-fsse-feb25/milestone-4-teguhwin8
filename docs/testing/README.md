@@ -7,6 +7,17 @@ This folder contains Postman collection and environment files for testing the Re
 1. **Revo-Bank-API.postman_collection.json** - Main collection with all API endpoints
 2. **Revo-Bank.postman_environment.json** - Environment variables for different setups
 
+## 🇮🇩 Indonesian Test Data
+
+After running `npx prisma db seed`, you can use these pre-seeded Indonesian accounts:
+
+| Email                      | Password      | Name           | Account Balance (IDR)       |
+| -------------------------- | ------------- | -------------- | --------------------------- |
+| `budi.santoso@gmail.com`   | `password123` | Budi Santoso   | Rp 5.000.000 + Rp 1.500.000 |
+| `sari.wijaya@gmail.com`    | `password123` | Sari Wijaya    | Rp 3.250.000                |
+| `agus.pratama@gmail.com`   | `password123` | Agus Pratama   | Rp 8.750.000                |
+| `admin.revobank@gmail.com` | `password123` | Admin RevoBank | Rp 50.000.000               |
+
 ## How to Import
 
 ### 1. Import Collection
@@ -92,9 +103,9 @@ Each request includes automated tests that verify:
 
 ```json
 {
-  "email": "john.doe@example.com",
+  "email": "budi.santoso@gmail.com",
   "password": "password123",
-  "name": "John Doe"
+  "name": "Budi Santoso"
 }
 ```
 

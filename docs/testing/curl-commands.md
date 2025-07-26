@@ -27,9 +27,9 @@ curl -X GET "$BASE_URL/" \
 curl -X POST "$BASE_URL/auth/register" \
   -H "Content-Type: application/json" \
   -d '{
-    "email": "john.doe@example.com",
+    "email": "budi.santoso@gmail.com",
     "password": "password123",
-    "name": "John Doe"
+    "name": "Budi Santoso"
   }'
 
 # Save the access_token from response for next requests
@@ -40,8 +40,8 @@ curl -X POST "$BASE_URL/auth/register" \
 #   "expires_in": "7d",
 #   "user": {
 #     "id": 1,
-#     "email": "john.doe@example.com",
-#     "name": "John Doe",
+#     "email": "budi.santoso@gmail.com",
+#     "name": "Budi Santoso",
 #     "createdAt": "2025-01-27T10:00:00.000Z"
 #   }
 # }
@@ -54,7 +54,7 @@ curl -X POST "$BASE_URL/auth/register" \
 curl -X POST "$BASE_URL/auth/login" \
   -H "Content-Type: application/json" \
   -d '{
-    "email": "john.doe@example.com",
+    "email": "budi.santoso@gmail.com",
     "password": "password123"
   }'
 
@@ -73,8 +73,8 @@ curl -X GET "$BASE_URL/user/profile" \
 # Expected response:
 # {
 #   "id": 1,
-#   "email": "john.doe@example.com",
-#   "name": "John Doe",
+#   "email": "budi.santoso@gmail.com",
+#   "name": "Budi Santoso",
 #   "createdAt": "2025-01-27T10:00:00.000Z"
 # }
 ```
@@ -148,9 +148,9 @@ curl -X GET "$BASE_URL/user/profile" \
 curl -X POST "$BASE_URL/auth/register" \
   -H "Content-Type: application/json" \
   -d '{
-    "email": "john.doe@example.com",
+    "email": "budi.santoso@gmail.com",
     "password": "password123",
-    "name": "John Doe Duplicate"
+    "name": "Budi Santoso Duplicate"
   }'
 
 # Expected: 409 Conflict
@@ -163,7 +163,7 @@ curl -X POST "$BASE_URL/auth/register" \
 curl -X POST "$BASE_URL/auth/login" \
   -H "Content-Type: application/json" \
   -d '{
-    "email": "john.doe@example.com",
+    "email": "budi.santoso@gmail.com",
     "password": "wrongpassword"
   }'
 
