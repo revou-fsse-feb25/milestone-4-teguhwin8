@@ -299,7 +299,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"John Doe Updated\"\n}"
+              "raw": "{\n  \"name\": \"Budi Santoso Updated\"\n}"
             },
             "url": {
               "raw": "{{base_url}}/user/profile",
@@ -325,7 +325,7 @@
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"name\": \"John Doe Updated\"\n}"
+                  "raw": "{\n  \"name\": \"Budi Santoso Updated\"\n}"
                 },
                 "url": {
                   "raw": "{{base_url}}/user/profile",

@@ -1,11 +1,13 @@
 # Postman Collection - Revo Bank API
 
-This folder contains Postman collection and environment files for testing the Revo Bank API endpoints.
+This documentation explains how to use the Postman collection for testing the Revo Bank API endpoints.
 
-## Files Included
+## Files Location
 
-1. **Revo-Bank-API.postman_collection.json** - Main collection with all API endpoints
-2. **Revo-Bank.postman_environment.json** - Environment variables for different setups
+The Postman files are located in the root `postman/` folder:
+
+1. **../postman/Revo-Bank-API.postman_collection.json** - Main collection with all API endpoints
+2. **../postman/Revo-Bank.postman_environment.json** - Environment variables for different setups
 
 ## 🇮🇩 Indonesian Test Data
 
@@ -24,14 +26,14 @@ After running `npx prisma db seed`, you can use these pre-seeded Indonesian acco
 
 1. Open Postman
 2. Click "Import" button
-3. Select `Revo-Bank-API.postman_collection.json`
+3. Select `../postman/Revo-Bank-API.postman_collection.json` from the project root
 4. Collection will appear in your workspace
 
 ### 2. Import Environment
 
 1. In Postman, go to "Environments" tab
 2. Click "Import"
-3. Select `Revo-Bank.postman_environment.json`
+3. Select `../postman/Revo-Bank.postman_environment.json` from the project root
 4. Select the "Revo Bank Environment" from dropdown
 
 ## API Endpoints Included
