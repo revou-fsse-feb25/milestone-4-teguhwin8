@@ -115,8 +115,96 @@ curl -X PATCH "$BASE_URL/user/profile" \
 curl -X DELETE "$BASE_URL/user/profile" \
   -H "Authorization: Bearer $ACCESS_TOKEN"
 
-# Expected: 204 No Content (empty response)
+# Expected: # Expected: 204 No Content (no response body)
 ```
+
+## 6. Account Management (Protected)
+
+```bash
+# Create new account
+curl -X POST "$BASE_URL/accounts"
+  -H "Content-Type: application/json"
+  -H "Authorization: Bearer $ACCESS_TOKEN"
+  -d '{}'
+
+# Get all user accounts
+curl -X GET "$BASE_URL/accounts"
+  -H "Authorization: Bearer $ACCESS_TOKEN"
+
+# Get specific account by ID
+curl -X GET "$BASE_URL/accounts/1"
+  -H "Authorization: Bearer $ACCESS_TOKEN"
+
+# Delete account
+curl -X DELETE "$BASE_URL/accounts/1"
+  -H "Authorization: Bearer $ACCESS_TOKEN"
+```
+
+## 7. Transaction Management (Protected)
+
+```bash
+# Deposit money (Rp 500,000)
+curl -X POST "$BASE_URL/transactions/deposit"
+  -H "Content-Type: application/json"
+  -H "Authorization: Bearer $ACCESS_TOKEN"
+  -d '{
+    "accountId": 1,
+    "amount": 500000
+  }'
+
+# Withdraw money (Rp 100,000)
+curl -X POST "$BASE_URL/transactions/withdraw"
+  -H "Content-Type: application/json"
+  -H "Authorization: Bearer $ACCESS_TOKEN"
+  -d '{
+    "accountId": 1,
+    "amount": 100000
+  }'
+
+# Transfer money between accounts (Rp 250,000)
+curl -X POST "$BASE_URL/transactions/transfer"
+  -H "Content-Type: application/json"
+  -H "Authorization: Bearer $ACCESS_TOKEN"
+  -d '{
+    "fromAccountId": 1,
+    "toAccountId": 2,
+    "amount": 250000
+  }'
+
+# Get all user transactions
+curl -X GET "$BASE_URL/transactions"
+  -H "Authorization: Bearer $ACCESS_TOKEN"
+
+# Get specific transaction by ID
+curl -X GET "$BASE_URL/transactions/1"
+  -H "Authorization: Bearer $ACCESS_TOKEN"
+```
+
+## 8. Testing with Seeded Data
+
+```bash
+# Login with Indonesian test user
+curl -X POST "$BASE_URL/auth/login"
+  -H "Content-Type: application/json"
+  -d '{
+    "email": "budi.santoso@gmail.com",
+    "password": "password123"
+  }'
+
+# Check existing accounts (should have IDR balances)
+curl -X GET "$BASE_URL/accounts"
+  -H "Authorization: Bearer $ACCESS_TOKEN"
+
+# Check existing transactions (should have Indonesian transaction history)
+curl -X GET "$BASE_URL/transactions"
+  -H "Authorization: Bearer $ACCESS_TOKEN"
+```
+
+---
+
+## Notes
+
+````
 
 ## Error Testing
 
@@ -128,7 +216,7 @@ curl -X GET "$BASE_URL/user/profile" \
   -H "Content-Type: application/json"
 
 # Expected: 401 Unauthorized
-```
+````
 
 ### 2. Test Invalid Token
 

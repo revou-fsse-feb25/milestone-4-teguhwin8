@@ -120,14 +120,23 @@ NODE_ENV="development"
 
 ### Available Endpoints
 
-| Method   | Endpoint         | Description         | Auth Required |
-| -------- | ---------------- | ------------------- | ------------- |
-| `GET`    | `/`              | Health check        | ❌            |
-| `POST`   | `/auth/register` | User registration   | ❌            |
-| `POST`   | `/auth/login`    | User login          | ❌            |
-| `GET`    | `/user/profile`  | Get user profile    | ✅            |
-| `PATCH`  | `/user/profile`  | Update user profile | ✅            |
-| `DELETE` | `/user/profile`  | Delete user account | ✅            |
+| Method   | Endpoint                 | Description               | Auth Required |
+| -------- | ------------------------ | ------------------------- | ------------- |
+| `GET`    | `/`                      | Health check              | ❌            |
+| `POST`   | `/auth/register`         | User registration         | ❌            |
+| `POST`   | `/auth/login`            | User login                | ❌            |
+| `GET`    | `/user/profile`          | Get user profile          | ✅            |
+| `PATCH`  | `/user/profile`          | Update user profile       | ✅            |
+| `DELETE` | `/user/profile`          | Delete user account       | ✅            |
+| `POST`   | `/accounts`              | Create new account        | ✅            |
+| `GET`    | `/accounts`              | Get all user accounts     | ✅            |
+| `GET`    | `/accounts/:id`          | Get account by ID         | ✅            |
+| `DELETE` | `/accounts/:id`          | Delete account            | ✅            |
+| `POST`   | `/transactions/deposit`  | Deposit money (IDR)       | ✅            |
+| `POST`   | `/transactions/withdraw` | Withdraw money (IDR)      | ✅            |
+| `POST`   | `/transactions/transfer` | Transfer money (IDR)      | ✅            |
+| `GET`    | `/transactions`          | Get all user transactions | ✅            |
+| `GET`    | `/transactions/:id`      | Get transaction by ID     | ✅            |
 
 ### Quick API Test
 
@@ -144,6 +153,18 @@ curl -X POST http://localhost:3000/auth/register \
 curl -X POST http://localhost:3000/auth/login \
   -H "Content-Type: application/json" \
   -d '{"email":"budi.santoso@gmail.com","password":"password123"}'
+
+# Create account (need JWT token from login)
+curl -X POST http://localhost:3000/accounts \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -d '{}'
+
+# Deposit money (Rp 500,000)
+curl -X POST http://localhost:3000/transactions/deposit \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -d '{"accountId":1,"amount":500000}'
 ```
 
 ### 🇮🇩 Test Credentials (Seeded Data)
@@ -219,6 +240,28 @@ For manual API testing, we provide:
 - **Postman Collection** - [postman/Revo-Bank-API.postman_collection.json](postman/Revo-Bank-API.postman_collection.json)
 - **cURL Commands** - [docs/testing/curl-commands.md](docs/testing/curl-commands.md)
 - **Testing Guide** - [docs/testing/README.md](docs/testing/README.md)
+
+#### 🚨 Important: Testing Transaction Endpoints
+
+When testing **Transaction endpoints** (Deposit, Withdraw, Transfer), the Postman collection automatically detects your valid account IDs:
+
+1. **For Transfer Money**: You need **at least 2 accounts** to test transfers
+   - The collection will use your first account as source (`fromAccountId`)
+   - The collection will use your second account as destination (`toAccountId`)
+   - If you only have 1 account, create another account first
+
+2. **For Deposit/Withdraw**: The collection will use your first account automatically
+
+3. **Steps to test successfully**:
+
+   ```
+   1. Run "Register" or use seeded user credentials
+   2. Run "Login" to get access token
+   3. Run "Create Account" at least twice (for transfer testing)
+   4. Run any Transaction endpoint - account IDs will be auto-detected
+   ```
+
+4. **If you get "not your userid" error**: This means you're using hardcoded account IDs that don't belong to your user. The updated collection fixes this by auto-detecting your valid account IDs.
 
 ## 📁 Project Structure
 
@@ -297,6 +340,43 @@ npm run test:cov           # Test coverage report
    git commit -m "feat: add your feature description"
    git push origin feature/your-feature-name
    ```
+
+### Common Issues & Troubleshooting
+
+#### ❌ `{ userId: undefined }` in Transaction Service
+
+**Penyebab**: Inconsistent user ID extraction pattern between controllers
+
+**Solusi**: Pastikan semua controllers menggunakan pattern yang sama:
+
+```typescript
+// ✅ BENAR - Gunakan @Request() dan req.user.id
+@Post('endpoint')
+async someMethod(@Request() req, @Body() dto: SomeDto) {
+  return this.service.someMethod(req.user.id, dto);
+}
+
+// ❌ SALAH - Jangan gunakan @User('sub')
+@Post('endpoint')
+async someMethod(@User('sub') userId: number, @Body() dto: SomeDto) {
+  // userId akan undefined karena JWT strategy mengembalikan user object, bukan payload
+}
+```
+
+#### ❌ "not your userid" Error in Transactions
+
+**Penyebab**: Hardcoded account IDs dalam testing yang bukan milik user
+
+**Solusi**:
+
+1. Gunakan Postman collection yang sudah updated (auto-detect account IDs)
+2. Atau pastikan account ID yang digunakan benar-benar milik user yang login
+
+#### ❌ JWT Token Expired
+
+**Penyebab**: Token expired atau tidak valid
+
+**Solusi**: Login ulang untuk mendapatkan token baru
 
 ## 🚀 Deployment
 

@@ -49,6 +49,21 @@ After running `npx prisma db seed`, you can use these pre-seeded Indonesian acco
 - **PATCH** `/user/profile` - Update user profile (Protected)
 - **DELETE** `/user/profile` - Delete user account (Protected)
 
+### 🏦 Account Management
+
+- **POST** `/accounts` - Create new account (Protected)
+- **GET** `/accounts` - Get all user accounts (Protected)
+- **GET** `/accounts/:id` - Get account by ID (Protected)
+- **DELETE** `/accounts/:id` - Delete account (Protected)
+
+### 💸 Transaction Management
+
+- **POST** `/transactions/deposit` - Deposit money in IDR (Protected)
+- **POST** `/transactions/withdraw` - Withdraw money in IDR (Protected)
+- **POST** `/transactions/transfer` - Transfer money in IDR (Protected)
+- **GET** `/transactions` - Get all user transactions (Protected)
+- **GET** `/transactions/:id` - Get transaction by ID (Protected)
+
 ### ❤️ Health Check
 
 - **GET** `/` - Application health check (Public)
@@ -64,18 +79,29 @@ After running `npx prisma db seed`, you can use these pre-seeded Indonesian acco
 
 ## Testing Flow
 
-### Option 1: New User Registration
+### Option 1: Complete Banking Flow (Recommended)
+
+1. **Register/Login User** - Get authentication token
+2. **Create Account** - Create bank account
+3. **Deposit Money** - Add money to account (e.g., Rp 1,000,000)
+4. **Check Balance** - Get account details to verify balance
+5. **Withdraw Money** - Withdraw some money (e.g., Rp 200,000)
+6. **Transfer Money** - Transfer to another account (if available)
+7. **Check Transactions** - View transaction history
+
+### Option 2: New User Registration
 
 1. **Register User** - Creates account and gets token
 2. **Get Profile** - Verify profile data
-3. **Update Profile** - Test profile update
-4. **Delete Account** - Clean up (optional)
+3. **Create Account** - Create first bank account
+4. **Deposit Money** - Add initial funds
 
-### Option 2: Existing User Login
+### Option 3: Existing User Login (Seeded Data)
 
-1. **Login User** - Authenticate and get token
-2. **Get Profile** - Verify profile data
-3. **Update Profile** - Test profile update
+1. **Login User** - Use Indonesian test credentials
+2. **Get Accounts** - View existing accounts with IDR balances
+3. **Get Transactions** - View existing transaction history
+4. **Perform New Transactions** - Deposit/withdraw/transfer
 
 ## Automated Testing Features
 

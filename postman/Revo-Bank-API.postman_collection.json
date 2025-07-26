@@ -2,7 +2,7 @@
   "info": {
     "_postman_id": "revo-bank-api-collection",
     "name": "Revo Bank API",
-    "description": "Complete API collection for Revo Bank Backend - Authentication and User Management",
+    "description": "Complete API collection for Revo Bank Backend - Authentication, User Management, Account Management & Transaction Processing with Indonesian Rupiah support",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_exporter_id": "revo-bank"
   },
@@ -465,6 +465,536 @@
         }
       ],
       "description": "User profile management endpoints"
+    },
+    {
+      "name": "Account Management",
+      "item": [
+        {
+          "name": "Create Account",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 201\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test(\"Account created successfully\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('id');",
+                  "    pm.expect(jsonData).to.have.property('balance');",
+                  "    pm.expect(jsonData.balance).to.eql(0);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"balance\": 0\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/accounts",
+              "host": ["{{base_url}}"],
+              "path": ["accounts"]
+            },
+            "description": "Create a new bank account for the authenticated user"
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Accounts",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response is an array\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.be.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/accounts",
+              "host": ["{{base_url}}"],
+              "path": ["accounts"]
+            },
+            "description": "Get all accounts belonging to the authenticated user"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Account by ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Account details returned\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('id');",
+                  "    pm.expect(jsonData).to.have.property('balance');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/accounts/1",
+              "host": ["{{base_url}}"],
+              "path": ["accounts", "1"]
+            },
+            "description": "Get specific account by ID (must belong to authenticated user)"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Account",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 204\", function () {",
+                  "    pm.response.to.have.status(204);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/accounts/1",
+              "host": ["{{base_url}}"],
+              "path": ["accounts", "1"]
+            },
+            "description": "Delete an account (must belong to authenticated user)"
+          },
+          "response": []
+        }
+      ],
+      "description": "Bank account management endpoints"
+    },
+    {
+      "name": "Transaction Management",
+      "item": [
+        {
+          "name": "Deposit Money",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "// Get user accounts to use valid account ID",
+                  "pm.sendRequest({",
+                  "    url: pm.environment.get('base_url') + '/accounts',",
+                  "    method: 'GET',",
+                  "    header: {",
+                  "        'Authorization': 'Bearer ' + pm.environment.get('access_token')",
+                  "    }",
+                  "}, function (err, response) {",
+                  "    if (err) {",
+                  "        console.log('Error getting accounts:', err);",
+                  "        return;",
+                  "    }",
+                  "    ",
+                  "    const accounts = response.json();",
+                  "    if (accounts && accounts.length > 0) {",
+                  "        // Use first account for deposit",
+                  "        pm.environment.set('deposit_account_id', accounts[0].id);",
+                  "    } else {",
+                  "        console.log('No accounts found. Please create an account first.');",
+                  "        pm.environment.set('deposit_account_id', 'NO_ACCOUNTS');",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 201\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test(\"Deposit successful\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('id');",
+                  "    pm.expect(jsonData.type).to.eql('DEPOSIT');",
+                  "    pm.expect(jsonData).to.have.property('amount');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accountId\": {{deposit_account_id}},\n  \"amount\": 500000\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/transactions/deposit",
+              "host": ["{{base_url}}"],
+              "path": ["transactions", "deposit"]
+            },
+            "description": "Deposit money to an account (Rp 500,000). Auto-detects valid account ID from your accounts."
+          },
+          "response": []
+        },
+        {
+          "name": "Withdraw Money",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "// Get user accounts to use valid account ID",
+                  "pm.sendRequest({",
+                  "    url: pm.environment.get('base_url') + '/accounts',",
+                  "    method: 'GET',",
+                  "    header: {",
+                  "        'Authorization': 'Bearer ' + pm.environment.get('access_token')",
+                  "    }",
+                  "}, function (err, response) {",
+                  "    if (err) {",
+                  "        console.log('Error getting accounts:', err);",
+                  "        return;",
+                  "    }",
+                  "    ",
+                  "    const accounts = response.json();",
+                  "    if (accounts && accounts.length > 0) {",
+                  "        // Use first account for withdrawal",
+                  "        pm.environment.set('withdraw_account_id', accounts[0].id);",
+                  "    } else {",
+                  "        console.log('No accounts found. Please create an account first.');",
+                  "        pm.environment.set('withdraw_account_id', 'NO_ACCOUNTS');",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 201\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test(\"Withdrawal successful\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('id');",
+                  "    pm.expect(jsonData.type).to.eql('WITHDRAWAL');",
+                  "    pm.expect(jsonData).to.have.property('amount');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accountId\": {{withdraw_account_id}},\n  \"amount\": 100000\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/transactions/withdraw",
+              "host": ["{{base_url}}"],
+              "path": ["transactions", "withdraw"]
+            },
+            "description": "Withdraw money from an account (Rp 100,000). Auto-detects valid account ID from your accounts."
+          },
+          "response": []
+        },
+        {
+          "name": "Transfer Money",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "// Get user accounts to use valid account IDs",
+                  "pm.sendRequest({",
+                  "    url: pm.environment.get('base_url') + '/accounts',",
+                  "    method: 'GET',",
+                  "    header: {",
+                  "        'Authorization': 'Bearer ' + pm.environment.get('access_token')",
+                  "    }",
+                  "}, function (err, response) {",
+                  "    if (err) {",
+                  "        console.log('Error getting accounts:', err);",
+                  "        return;",
+                  "    }",
+                  "    ",
+                  "    const accounts = response.json();",
+                  "    if (accounts && accounts.length >= 2) {",
+                  "        // Use first account as source, second as destination",
+                  "        pm.environment.set('from_account_id', accounts[0].id);",
+                  "        pm.environment.set('to_account_id', accounts[1].id);",
+                  "    } else if (accounts && accounts.length === 1) {",
+                  "        // If only one account, we need to create another one first",
+                  "        console.log('Only one account found. Please create another account first.');",
+                  "        pm.environment.set('from_account_id', accounts[0].id);",
+                  "        pm.environment.set('to_account_id', 'NEED_SECOND_ACCOUNT');",
+                  "    } else {",
+                  "        console.log('No accounts found. Please create accounts first.');",
+                  "        pm.environment.set('from_account_id', 'NO_ACCOUNTS');",
+                  "        pm.environment.set('to_account_id', 'NO_ACCOUNTS');",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 201\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test(\"Transfer successful\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('transferOut');",
+                  "    pm.expect(jsonData).to.have.property('transferIn');",
+                  "    pm.expect(jsonData.transferOut.type).to.eql('TRANSFER_OUT');",
+                  "    pm.expect(jsonData.transferIn.type).to.eql('TRANSFER_IN');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fromAccountId\": {{from_account_id}},\n  \"toAccountId\": {{to_account_id}},\n  \"amount\": 250000\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/transactions/transfer",
+              "host": ["{{base_url}}"],
+              "path": ["transactions", "transfer"]
+            },
+            "description": "Transfer money between accounts (Rp 250,000). Auto-detects valid account IDs from your accounts."
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Transactions",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response is an array\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.be.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/transactions",
+              "host": ["{{base_url}}"],
+              "path": ["transactions"]
+            },
+            "description": "Get all transactions for authenticated user's accounts"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Transaction by ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Transaction details returned\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('id');",
+                  "    pm.expect(jsonData).to.have.property('type');",
+                  "    pm.expect(jsonData).to.have.property('amount');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/transactions/1",
+              "host": ["{{base_url}}"],
+              "path": ["transactions", "1"]
+            },
+            "description": "Get specific transaction by ID (must belong to authenticated user)"
+          },
+          "response": []
+        }
+      ],
+      "description": "Banking transaction endpoints with Indonesian Rupiah amounts"
     },
     {
       "name": "Health Check",
