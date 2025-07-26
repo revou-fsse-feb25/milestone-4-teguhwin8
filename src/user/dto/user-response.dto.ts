@@ -1,0 +1,35 @@
+import { ApiProperty } from '@nestjs/swagger';
+import { Exclude } from 'class-transformer';
+
+export class UserResponseDto {
+  @ApiProperty({
+    description: 'User ID',
+    example: 1,
+  })
+  id: number;
+
+  @ApiProperty({
+    description: 'User email address',
+    example: 'user@example.com',
+  })
+  email: string;
+
+  @ApiProperty({
+    description: 'User full name',
+    example: 'John Doe',
+  })
+  name: string;
+
+  @ApiProperty({
+    description: 'User creation date',
+    example: '2025-01-27T10:00:00.000Z',
+  })
+  createdAt: Date;
+
+  @Exclude()
+  password: string;
+
+  constructor(partial: Partial<UserResponseDto>) {
+    Object.assign(this, partial);
+  }
+}
