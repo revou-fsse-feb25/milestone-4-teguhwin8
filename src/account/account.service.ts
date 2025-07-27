@@ -74,6 +74,38 @@ export class AccountService {
     return accounts.map((account) => new AccountResponseDto(account));
   }
 
+  async findAll(): Promise<AccountResponseDto[]> {
+    const accounts = await this.prisma.account.findMany({
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            role: true,
+          },
+        },
+        transactions: {
+          select: {
+            id: true,
+            type: true,
+            amount: true,
+            createdAt: true,
+          },
+          orderBy: {
+            createdAt: 'desc',
+          },
+          take: 5, // Show last 5 transactions
+        },
+      },
+      orderBy: {
+        id: 'asc',
+      },
+    });
+
+    return accounts.map((account) => new AccountResponseDto(account));
+  }
+
   async findOne(id: number, userId: number): Promise<AccountResponseDto> {
     const account = await this.prisma.account.findUnique({
       where: { id },

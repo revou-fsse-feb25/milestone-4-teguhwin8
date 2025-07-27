@@ -47,6 +47,7 @@ async function main() {
       email: 'admin.revobank@gmail.com',
       password: hashedPassword,
       name: 'Admin RevoBank',
+      role: 'ADMIN',
     },
   });
 

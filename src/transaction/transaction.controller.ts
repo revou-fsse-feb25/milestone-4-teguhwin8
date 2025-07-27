@@ -8,14 +8,26 @@ import {
   ParseIntPipe,
   Request,
 } from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+  ApiForbiddenResponse,
+} from '@nestjs/swagger';
 import { TransactionService } from './transaction.service';
 import { DepositDto } from './dto/deposit.dto';
 import { WithdrawDto } from './dto/withdraw.dto';
 import { TransferDto } from './dto/transfer.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { Role } from '@prisma/client';
 
+@ApiTags('Transactions')
+@ApiBearerAuth()
 @Controller('transactions')
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class TransactionController {
   constructor(private readonly transactionService: TransactionService) {}
 
@@ -35,8 +47,17 @@ export class TransactionController {
   }
 
   @Get()
+  @ApiOperation({ summary: 'Get all transactions for current user' })
   async findAll(@Request() req) {
     return this.transactionService.findAll(req.user.id);
+  }
+
+  @Get('admin/all')
+  @Roles(Role.ADMIN)
+  @ApiOperation({ summary: 'Get all transactions (Admin only)' })
+  @ApiForbiddenResponse({ description: 'Admin access required' })
+  async findAllTransactions() {
+    return this.transactionService.findAllTransactions();
   }
 
   @Get(':id')

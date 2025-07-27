@@ -5,6 +5,7 @@ import { UnauthorizedException, ConflictException } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UserService } from '../user/user.service';
 import { UserResponseDto } from '../user/dto/user-response.dto';
+import { Role } from '@prisma/client';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -62,6 +63,7 @@ describe('AuthService', () => {
       email: 'test@example.com',
       password: 'password123',
       name: 'Test User',
+      role: Role.USER,
     };
 
     it('should register user successfully', async () => {
@@ -69,6 +71,7 @@ describe('AuthService', () => {
         id: 1,
         email: registerDto.email,
         name: registerDto.name,
+        role: Role.USER,
         createdAt: new Date(),
         password: 'hashedPassword',
       });
@@ -82,10 +85,15 @@ describe('AuthService', () => {
 
       const result = await service.register(registerDto);
 
-      expect(mockUserService.create).toHaveBeenCalledWith(registerDto);
+      expect(mockUserService.create).toHaveBeenCalledWith({
+        email: registerDto.email,
+        password: registerDto.password,
+        name: registerDto.name,
+      });
       expect(mockJwtService.sign).toHaveBeenCalledWith({
         sub: createdUser.id,
         email: createdUser.email,
+        role: createdUser.role,
       });
       expect(result.access_token).toBe(mockToken);
       expect(result.user).toBe(createdUser);
@@ -148,13 +156,14 @@ describe('AuthService', () => {
   });
 
   describe('validateUser', () => {
-    const payload = { sub: 1, email: 'test@example.com' };
+    const payload = { sub: 1, email: 'test@example.com', role: Role.USER };
 
     it('should validate user successfully', async () => {
       const user = new UserResponseDto({
         id: 1,
         email: 'test@example.com',
         name: 'Test User',
+        role: Role.USER,
         createdAt: new Date(),
         password: 'hashedPassword',
       });

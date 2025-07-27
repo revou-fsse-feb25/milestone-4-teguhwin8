@@ -2,16 +2,25 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UserService } from './user.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { ConflictException, NotFoundException } from '@nestjs/common';
+import { Role } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 
 // Mock PrismaClient
 const mockPrismaService = {
   user: {
     findUnique: jest.fn(),
+    findMany: jest.fn(),
     create: jest.fn(),
     update: jest.fn(),
     delete: jest.fn(),
   },
+  account: {
+    deleteMany: jest.fn(),
+  },
+  transaction: {
+    deleteMany: jest.fn(),
+  },
+  $transaction: jest.fn(),
 };
 
 // Mock bcrypt
@@ -46,6 +55,7 @@ describe('UserService', () => {
       email: 'test@example.com',
       password: 'password123',
       name: 'Test User',
+      role: Role.USER,
     };
 
     it('should create a new user successfully', async () => {
@@ -55,6 +65,7 @@ describe('UserService', () => {
         email: createUserDto.email,
         password: hashedPassword,
         name: createUserDto.name,
+        role: Role.USER,
         createdAt: new Date(),
       };
 
@@ -73,6 +84,7 @@ describe('UserService', () => {
           email: createUserDto.email,
           password: hashedPassword,
           name: createUserDto.name,
+          role: 'USER',
         },
       });
       expect(result.email).toBe(createUserDto.email);
@@ -157,15 +169,44 @@ describe('UserService', () => {
     const userId = 1;
 
     it('should delete user successfully', async () => {
-      const existingUser = { id: userId, email: 'test@example.com' };
+      const existingUser = {
+        id: userId,
+        email: 'test@example.com',
+        accounts: [
+          {
+            id: 1,
+            transactions: [{ id: 1 }, { id: 2 }],
+          },
+          {
+            id: 2,
+            transactions: [{ id: 3 }],
+          },
+        ],
+      };
+
       mockPrismaService.user.findUnique.mockResolvedValue(existingUser);
-      mockPrismaService.user.delete.mockResolvedValue(existingUser);
+      mockPrismaService.$transaction.mockImplementation(async (callback) => {
+        const mockPrisma = {
+          transaction: { deleteMany: jest.fn() },
+          account: { deleteMany: jest.fn() },
+          user: { delete: jest.fn() },
+        };
+        return await callback(mockPrisma);
+      });
 
       await service.remove(userId);
 
-      expect(mockPrismaService.user.delete).toHaveBeenCalledWith({
+      expect(mockPrismaService.user.findUnique).toHaveBeenCalledWith({
         where: { id: userId },
+        include: {
+          accounts: {
+            include: {
+              transactions: true,
+            },
+          },
+        },
       });
+      expect(mockPrismaService.$transaction).toHaveBeenCalled();
     });
 
     it('should throw NotFoundException if user not found', async () => {
@@ -221,6 +262,85 @@ describe('UserService', () => {
       const result = await service.validatePassword(email, password);
 
       expect(result).toBeNull();
+    });
+  });
+
+  describe('findAll', () => {
+    it('should return all users', async () => {
+      const users = [
+        {
+          id: 1,
+          email: 'user1@example.com',
+          name: 'User 1',
+          role: Role.USER,
+          createdAt: new Date(),
+          accounts: [],
+        },
+        {
+          id: 2,
+          email: 'admin@example.com',
+          name: 'Admin',
+          role: Role.ADMIN,
+          createdAt: new Date(),
+          accounts: [],
+        },
+      ];
+
+      mockPrismaService.user.findMany.mockResolvedValue(users);
+
+      const result = await service.findAll();
+
+      expect(mockPrismaService.user.findMany).toHaveBeenCalledWith({
+        include: {
+          accounts: true,
+        },
+      });
+      expect(result).toHaveLength(2);
+      expect(result[0].role).toBe(Role.USER);
+      expect(result[1].role).toBe(Role.ADMIN);
+    });
+  });
+
+  describe('updateRole', () => {
+    it('should update user role successfully', async () => {
+      const userId = 1;
+      const newRole = Role.ADMIN;
+      const existingUser = {
+        id: userId,
+        email: 'user@example.com',
+        name: 'User',
+        role: Role.USER,
+        createdAt: new Date(),
+      };
+      const updatedUser = {
+        ...existingUser,
+        role: newRole,
+      };
+
+      mockPrismaService.user.findUnique.mockResolvedValue(existingUser);
+      mockPrismaService.user.update.mockResolvedValue(updatedUser);
+
+      const result = await service.updateRole(userId, newRole);
+
+      expect(mockPrismaService.user.findUnique).toHaveBeenCalledWith({
+        where: { id: userId },
+      });
+      expect(mockPrismaService.user.update).toHaveBeenCalledWith({
+        where: { id: userId },
+        data: { role: newRole },
+      });
+      expect(result.role).toBe(newRole);
+    });
+
+    it('should throw NotFoundException if user does not exist', async () => {
+      const userId = 1;
+      const newRole = Role.ADMIN;
+
+      mockPrismaService.user.findUnique.mockResolvedValue(null);
+
+      await expect(service.updateRole(userId, newRole)).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 });

@@ -36,6 +36,7 @@ export class UserService {
         email: createUserDto.email,
         password: hashedPassword,
         name: createUserDto.name,
+        role: createUserDto.role || 'USER',
       },
     });
 
@@ -103,14 +104,37 @@ export class UserService {
   async remove(id: number): Promise<void> {
     const user = await this.prisma.user.findUnique({
       where: { id },
+      include: {
+        accounts: {
+          include: {
+            transactions: true,
+          },
+        },
+      },
     });
 
     if (!user) {
       throw new NotFoundException('User not found');
     }
 
-    await this.prisma.user.delete({
-      where: { id },
+    // Use a transaction to ensure data consistency
+    await this.prisma.$transaction(async (prisma) => {
+      // First, delete all transactions for all user accounts
+      for (const account of user.accounts) {
+        await prisma.transaction.deleteMany({
+          where: { accountId: account.id },
+        });
+      }
+
+      // Then, delete all user accounts
+      await prisma.account.deleteMany({
+        where: { userId: id },
+      });
+
+      // Finally, delete the user
+      await prisma.user.delete({
+        where: { id },
+      });
     });
   }
 
@@ -121,5 +145,32 @@ export class UserService {
       return result;
     }
     return null;
+  }
+
+  async findAll(): Promise<UserResponseDto[]> {
+    const users = await this.prisma.user.findMany({
+      include: {
+        accounts: true,
+      },
+    });
+
+    return users.map((user) => new UserResponseDto(user));
+  }
+
+  async updateRole(id: number, role: string): Promise<UserResponseDto> {
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const updatedUser = await this.prisma.user.update({
+      where: { id },
+      data: { role: role as any },
+    });
+
+    return new UserResponseDto(updatedUser);
   }
 }

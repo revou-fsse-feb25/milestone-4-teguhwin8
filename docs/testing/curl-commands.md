@@ -1,6 +1,6 @@
 # Revo Bank API - cURL Testing Commands
 
-This file contains cURL commands for testing all API endpoints manually without Postman.
+This file contains cURL commands for testing all API endpoints manually without Postman, including role-based features.
 
 ## Environment Setup
 
@@ -8,6 +8,7 @@ This file contains cURL commands for testing all API endpoints manually without 
 # Set base URL (change as needed)
 export BASE_URL="http://localhost:3000"
 export ACCESS_TOKEN="" # Will be set after login/register
+export ADMIN_TOKEN=""  # Will be set after admin login
 ```
 
 ## 1. Health Check (Public)
@@ -23,7 +24,7 @@ curl -X GET "$BASE_URL/" \
 ## 2. User Registration
 
 ```bash
-# Register new user
+# Register new user (defaults to USER role)
 curl -X POST "$BASE_URL/auth/register" \
   -H "Content-Type: application/json" \
   -d '{
@@ -42,6 +43,7 @@ curl -X POST "$BASE_URL/auth/register" \
 #     "id": 1,
 #     "email": "budi.santoso@gmail.com",
 #     "name": "Budi Santoso",
+#     "role": "USER",
 #     "createdAt": "2025-01-27T10:00:00.000Z"
 #   }
 # }
@@ -60,6 +62,17 @@ curl -X POST "$BASE_URL/auth/login" \
 
 # Copy access_token from response
 export ACCESS_TOKEN="your_jwt_token_here"
+
+# Login as admin (for testing admin features)
+curl -X POST "$BASE_URL/auth/login" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "admin.revobank@gmail.com",
+    "password": "password123"
+  }'
+
+# Copy admin access_token
+export ADMIN_TOKEN="admin_jwt_token_here"
 ```
 
 ## 4. Get User Profile (Protected)
@@ -287,6 +300,73 @@ curl -X POST "$BASE_URL/auth/register" \
   }'
 
 # Expected: 400 Bad Request with validation errors
+```
+
+## Admin-Only Commands
+
+### Admin User Management
+
+```bash
+# Register new admin user (requires admin token)
+curl -X POST "$BASE_URL/auth/register-admin" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $ADMIN_TOKEN" \
+  -d '{
+    "email": "newadmin@revobank.com",
+    "password": "password123",
+    "name": "New Admin",
+    "role": "ADMIN"
+  }'
+
+# Get all users (admin only)
+curl -X GET "$BASE_URL/user/all" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $ADMIN_TOKEN"
+
+# Get specific user by ID (admin only)
+curl -X GET "$BASE_URL/user/1" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $ADMIN_TOKEN"
+
+# Update user role (admin only)
+curl -X PATCH "$BASE_URL/user/1/role" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $ADMIN_TOKEN" \
+  -d '{
+    "role": "ADMIN"
+  }'
+```
+
+### Admin System Monitoring
+
+```bash
+# Get all accounts in system (admin only)
+curl -X GET "$BASE_URL/accounts/admin/all" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $ADMIN_TOKEN"
+
+# Get all transactions in system (admin only)
+curl -X GET "$BASE_URL/transactions/admin/all" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $ADMIN_TOKEN"
+```
+
+## Role-Based Error Testing
+
+```bash
+# Try admin endpoint with regular user token (should fail)
+curl -X GET "$BASE_URL/user/all" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $ACCESS_TOKEN"
+
+# Expected: 403 Forbidden
+
+# Try accessing other user's resources
+curl -X GET "$BASE_URL/accounts/999" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $ACCESS_TOKEN"
+
+# Expected: 403 Forbidden or 404 Not Found
 ```
 
 ## Complete Testing Flow

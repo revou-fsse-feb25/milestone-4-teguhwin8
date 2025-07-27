@@ -2,7 +2,7 @@
 
 This documentation explains how to use the Postman collection for testing the Revo Bank API endpoints.
 
-## Files Location
+## File Locations
 
 The Postman files are located in the root `postman/` folder:
 
@@ -13,12 +13,12 @@ The Postman files are located in the root `postman/` folder:
 
 After running `npx prisma db seed`, you can use these pre-seeded Indonesian accounts:
 
-| Email                      | Password      | Name           | Account Balance (IDR)       |
-| -------------------------- | ------------- | -------------- | --------------------------- |
-| `budi.santoso@gmail.com`   | `password123` | Budi Santoso   | Rp 5.000.000 + Rp 1.500.000 |
-| `sari.wijaya@gmail.com`    | `password123` | Sari Wijaya    | Rp 3.250.000                |
-| `agus.pratama@gmail.com`   | `password123` | Agus Pratama   | Rp 8.750.000                |
-| `admin.revobank@gmail.com` | `password123` | Admin RevoBank | Rp 50.000.000               |
+| Email                      | Password      | Name           | Role  | Account Balance (IDR)       |
+| -------------------------- | ------------- | -------------- | ----- | --------------------------- |
+| `budi.santoso@gmail.com`   | `password123` | Budi Santoso   | USER  | Rp 5.000.000 + Rp 1.500.000 |
+| `sari.wijaya@gmail.com`    | `password123` | Sari Wijaya    | USER  | Rp 3.250.000                |
+| `agus.pratama@gmail.com`   | `password123` | Agus Pratama   | USER  | Rp 8.750.000                |
+| `admin.revobank@gmail.com` | `password123` | Admin RevoBank | ADMIN | Rp 50.000.000               |
 
 ## How to Import
 
@@ -36,18 +36,22 @@ After running `npx prisma db seed`, you can use these pre-seeded Indonesian acco
 3. Select `../postman/Revo-Bank.postman_environment.json` from the project root
 4. Select the "Revo Bank Environment" from dropdown
 
-## API Endpoints Included
+## Available API Endpoints
 
 ### 🔐 Authentication
 
 - **POST** `/auth/register` - Register new user
 - **POST** `/auth/login` - Login user
+- **POST** `/auth/register-admin` - Register admin (Admin only)
 
 ### 👤 User Management
 
 - **GET** `/user/profile` - Get user profile (Protected)
 - **PATCH** `/user/profile` - Update user profile (Protected)
-- **DELETE** `/user/profile` - Delete user account (Protected)
+- **DELETE** `/user/profile` - Hapus akun user (Protected)
+- **GET** `/user/all` - Dapatkan semua user (Admin only)
+- **GET** `/user/:id` - Dapatkan user by ID (Admin only)
+- **PATCH** `/user/:id/role` - Update role user (Admin only)
 
 ### 🏦 Account Management
 

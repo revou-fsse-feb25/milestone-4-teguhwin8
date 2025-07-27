@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
+import { Role } from '@prisma/client';
 
 export class UserResponseDto {
   @ApiProperty({
@@ -19,6 +20,13 @@ export class UserResponseDto {
     example: 'John Doe',
   })
   name: string;
+
+  @ApiProperty({
+    description: 'User role',
+    example: 'USER',
+    enum: Role,
+  })
+  role: Role;
 
   @ApiProperty({
     description: 'User creation date',

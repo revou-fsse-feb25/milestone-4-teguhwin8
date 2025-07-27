@@ -17,16 +17,20 @@ import {
   ApiResponse,
   ApiBearerAuth,
   ApiParam,
+  ApiForbiddenResponse,
 } from '@nestjs/swagger';
 import { AccountService } from './account.service';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
 import { AccountResponseDto } from './dto/account-response.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { Role } from '@prisma/client';
 
 @ApiTags('accounts')
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('accounts')
 export class AccountController {
   constructor(private readonly accountService: AccountService) {}
@@ -66,6 +70,23 @@ export class AccountController {
   })
   async findAll(@Request() req): Promise<AccountResponseDto[]> {
     return await this.accountService.findAllByUser(req.user.id);
+  }
+
+  @Get('admin/all')
+  @Roles(Role.ADMIN)
+  @ApiOperation({ summary: 'Get all accounts (Admin only)' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'List of all accounts',
+    type: [AccountResponseDto],
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Unauthorized access',
+  })
+  @ApiForbiddenResponse({ description: 'Admin access required' })
+  async findAllAccounts(): Promise<AccountResponseDto[]> {
+    return await this.accountService.findAll();
   }
 
   @Get(':id')

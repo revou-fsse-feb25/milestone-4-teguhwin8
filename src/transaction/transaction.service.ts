@@ -313,4 +313,28 @@ export class TransactionService {
 
     return transaction;
   }
+
+  async findAllTransactions() {
+    return this.prisma.transaction.findMany({
+      include: {
+        account: {
+          select: {
+            id: true,
+            balance: true,
+            user: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+                role: true,
+              },
+            },
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+  }
 }

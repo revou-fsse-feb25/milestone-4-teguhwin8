@@ -11,17 +11,64 @@ This document provides comprehensive information about all available endpoints i
 
 ## Authentication
 
-The API uses JWT (JSON Web Token) for authentication. Include the token in the Authorization header:
+The API uses JWT (JSON Web Token) for authentication with role-based access control. Include the token in the Authorization header:
 
 ```
-Authorization: Bearer <your-jwt-token>
+# Dokumentasi Referensi API
+
+## Overview
+
+Dokumen ini menyediakan informasi komprehensif tentang semua endpoint yang tersedia di Revo Bank API. API mengikuti prinsip RESTful dan menggunakan JSON untuk pertukaran data.
+
+## Base URL
+
+- **Development**: `http://localhost:3000`
+- **Production**: `https://your-domain.com/api` (belum di-deploy)
+
+## Status Dokumentasi Swagger
+
+- ✅ **Swagger Decorators**: Semua endpoint sudah dilengkapi dengan dekorator OpenAPI
+- 🔄 **Swagger UI**: Sedang dalam pengembangan (belum dikonfigurasi di main.ts)
+- ✅ **Manual Documentation**: Dokumentasi lengkap tersedia di dokumen ini
+
+## Autentikasi
+
+API menggunakan JWT (JSON Web Token) untuk autentikasi dengan role-based access control. Sertakan token di header Authorization:
+
 ```
+
+Authorization: Bearer <your-jwt-token>
+
+```
+
+### User Roles
+
+- **USER**: Nasabah bank reguler (role default)
+- **ADMIN**: Administrator bank dengan akses sistem
+
+Untuk dokumentasi role detail, lihat [Dokumentasi RBAC](rbac-documentation.md)
+
+### Token Lifecycle
+
+- **Expiration**: 7 hari (dapat dikonfigurasi)
+- **Refresh**: Saat ini belum diimplementasi (perlu re-login)
+- **Storage**: Client-side storage (localStorage/sessionStorage direkomendasikan)
+- **Role Claims**: Token termasuk user role untuk otorisasi
+```
+
+### User Roles
+
+- **USER**: Regular bank customers (default role)
+- **ADMIN**: Bank administrators with system-wide access
+
+For detailed role documentation, see [RBAC Documentation](rbac-documentation.md)
 
 ### Token Lifecycle
 
 - **Expiration**: 7 days (configurable)
 - **Refresh**: Currently not implemented (re-login required)
 - **Storage**: Client-side storage (localStorage/sessionStorage recommended)
+- **Role Claims**: Token includes user role for authorization
 
 ## Response Format
 
