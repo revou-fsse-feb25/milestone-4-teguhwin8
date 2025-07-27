@@ -4,14 +4,14 @@ import {
   ForbiddenException,
   BadRequestException,
 } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
+import { PrismaService } from '../prisma/prisma.service';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
 import { AccountResponseDto } from './dto/account-response.dto';
 
 @Injectable()
 export class AccountService {
-  private prisma = new PrismaClient();
+  constructor(private prisma: PrismaService) {}
 
   async create(
     userId: number,

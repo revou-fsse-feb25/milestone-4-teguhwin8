@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AccountService } from './account.service';
+import { PrismaService } from '../prisma/prisma.service';
 import {
   NotFoundException,
   ForbiddenException,
@@ -25,15 +26,13 @@ describe('AccountService', () => {
       providers: [
         AccountService,
         {
-          provide: 'PrismaService',
+          provide: PrismaService,
           useValue: mockPrismaService,
         },
       ],
     }).compile();
 
     service = module.get<AccountService>(AccountService);
-    // Mock the prisma instance
-    (service as any).prisma = mockPrismaService;
   });
 
   afterEach(() => {
