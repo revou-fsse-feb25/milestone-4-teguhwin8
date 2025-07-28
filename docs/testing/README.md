@@ -15,7 +15,7 @@ After running `npx prisma db seed`, you can use these pre-seeded Indonesian acco
 
 | Email                      | Password      | Name           | Role  | Account Balance (IDR)       |
 | -------------------------- | ------------- | -------------- | ----- | --------------------------- |
-| `budi.santoso@gmail.com`   | `password123` | Budi Santoso   | USER  | Rp 5.000.000 + Rp 1.500.000 |
+| `teguhwin8@gmail.com`      | `password123` | Teguh Widodo   | USER  | Rp 5.000.000 + Rp 1.500.000 |
 | `sari.wijaya@gmail.com`    | `password123` | Sari Wijaya    | USER  | Rp 3.250.000                |
 | `agus.pratama@gmail.com`   | `password123` | Agus Pratama   | USER  | Rp 8.750.000                |
 | `admin.revobank@gmail.com` | `password123` | Admin RevoBank | ADMIN | Rp 50.000.000               |
@@ -48,10 +48,10 @@ After running `npx prisma db seed`, you can use these pre-seeded Indonesian acco
 
 - **GET** `/user/profile` - Get user profile (Protected)
 - **PATCH** `/user/profile` - Update user profile (Protected)
-- **DELETE** `/user/profile` - Hapus akun user (Protected)
-- **GET** `/user/all` - Dapatkan semua user (Admin only)
-- **GET** `/user/:id` - Dapatkan user by ID (Admin only)
-- **PATCH** `/user/:id/role` - Update role user (Admin only)
+- **DELETE** `/user/profile` - Delete user account (Protected)
+- **GET** `/user/all` - Get all users (Admin only)
+- **GET** `/user/:id` - Get user by ID (Admin only)
+- **PATCH** `/user/:id/role` - Update user role (Admin only)
 
 ### 🏦 Account Management
 
@@ -135,9 +135,9 @@ Each request includes automated tests that verify:
 
 ```json
 {
-  "email": "budi.santoso@gmail.com",
+  "email": "teguhwin8@gmail.com",
   "password": "password123",
-  "name": "Budi Santoso"
+  "name": "Teguh Widodo"
 }
 ```
 

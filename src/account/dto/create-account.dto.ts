@@ -4,7 +4,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 export class CreateAccountDto {
   @ApiProperty({
     description: 'Initial balance for the account',
-    example: 1000.0,
+    example: 0,
     minimum: 0,
   })
   @IsNotEmpty()

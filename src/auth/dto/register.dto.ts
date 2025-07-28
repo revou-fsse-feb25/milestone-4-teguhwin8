@@ -12,7 +12,7 @@ import { Role } from '@prisma/client';
 export class RegisterDto {
   @ApiProperty({
     description: 'User email address',
-    example: 'user@example.com',
+    example: 'teguhwin8@gmail.com',
   })
   @IsEmail()
   @IsNotEmpty()
@@ -30,7 +30,7 @@ export class RegisterDto {
 
   @ApiProperty({
     description: 'User full name',
-    example: 'John Doe',
+    example: 'Teguh Widodo',
   })
   @IsString()
   @IsNotEmpty()

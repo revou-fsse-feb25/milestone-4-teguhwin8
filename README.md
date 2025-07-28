@@ -95,9 +95,14 @@ NODE_ENV=development
 ## API Documentation
 
 - Swagger decorators ✅
-- Swagger UI setup 🔄 (to be configured in `main.ts`)
+- Swagger UI setup ✅ (configured at `/api`)
 - Manual docs: [`docs/api/README.md`](./docs/api/README.md)
 - Postman collection: [`postman/Revo-Bank-API.postman_collection.json`](./postman/Revo-Bank-API.postman_collection.json)
+
+### 📖 Swagger UI Access
+
+- **Development**: `http://localhost:3000/api`
+- **JSON Schema**: `http://localhost:3000/api-json`
 
 ### 🔓 Public Endpoints
 

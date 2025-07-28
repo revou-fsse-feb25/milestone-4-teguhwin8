@@ -20,9 +20,9 @@ async function main() {
 
   const user1 = await prisma.user.create({
     data: {
-      email: 'budi.santoso@gmail.com',
+      email: 'teguhwin8@gmail.com',
       password: hashedPassword,
-      name: 'Budi Santoso',
+      name: 'Teguh Widodo',
     },
   });
 
@@ -195,7 +195,7 @@ async function main() {
 
   console.log('\n🔑 Test Credentials:');
   console.log('===================');
-  console.log('Email: budi.santoso@gmail.com');
+  console.log('Email: teguhwin8@gmail.com');
   console.log('Email: sari.wijaya@gmail.com');
   console.log('Email: agus.pratama@gmail.com');
   console.log('Email: admin.revobank@gmail.com');

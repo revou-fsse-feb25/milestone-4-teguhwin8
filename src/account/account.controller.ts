@@ -28,8 +28,8 @@ import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { Role } from '@prisma/client';
 
-@ApiTags('accounts')
-@ApiBearerAuth()
+@ApiTags('Accounts')
+@ApiBearerAuth('JWT-auth')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('accounts')
 export class AccountController {

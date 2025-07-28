@@ -25,7 +25,7 @@ import { Roles } from '../auth/decorators/roles.decorator';
 import { Role } from '@prisma/client';
 
 @ApiTags('Transactions')
-@ApiBearerAuth()
+@ApiBearerAuth('JWT-auth')
 @Controller('transactions')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class TransactionController {

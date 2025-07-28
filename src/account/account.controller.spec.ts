@@ -39,13 +39,17 @@ describe('AccountController', () => {
 
   describe('create', () => {
     it('should create an account', async () => {
-      const createAccountDto: CreateAccountDto = { balance: 1000 };
-      const mockUser = { id: 1, email: 'test@example.com', name: 'Test User' };
+      const createAccountDto: CreateAccountDto = { balance: 5000000 };
+      const mockUser = {
+        id: 1,
+        email: 'teguhwin8@gmail.com',
+        name: 'Teguh Widodo',
+      };
       const mockRequest = { user: mockUser };
       const mockAccount = new AccountResponseDto({
         id: 1,
         userId: 1,
-        balance: 1000,
+        balance: 5000000,
         user: mockUser,
       });
 
@@ -63,19 +67,23 @@ describe('AccountController', () => {
 
   describe('findAll', () => {
     it('should return all accounts for user', async () => {
-      const mockUser = { id: 1, email: 'test@example.com', name: 'Test User' };
+      const mockUser = {
+        id: 1,
+        email: 'teguhwin8@gmail.com',
+        name: 'Teguh Widodo',
+      };
       const mockRequest = { user: mockUser };
       const mockAccounts = [
         new AccountResponseDto({
           id: 1,
           userId: 1,
-          balance: 1000,
+          balance: 5000000,
           user: mockUser,
         }),
         new AccountResponseDto({
           id: 2,
           userId: 1,
-          balance: 2000,
+          balance: 1500000,
           user: mockUser,
         }),
       ];
@@ -92,12 +100,16 @@ describe('AccountController', () => {
   describe('findOne', () => {
     it('should return an account by id', async () => {
       const accountId = 1;
-      const mockUser = { id: 1, email: 'test@example.com', name: 'Test User' };
+      const mockUser = {
+        id: 1,
+        email: 'teguhwin8@gmail.com',
+        name: 'Teguh Widodo',
+      };
       const mockRequest = { user: mockUser };
       const mockAccount = new AccountResponseDto({
         id: accountId,
         userId: 1,
-        balance: 1000,
+        balance: 5000000,
         user: mockUser,
       });
 
@@ -113,13 +125,17 @@ describe('AccountController', () => {
   describe('update', () => {
     it('should update an account', async () => {
       const accountId = 1;
-      const updateAccountDto: UpdateAccountDto = { balance: 2000 };
-      const mockUser = { id: 1, email: 'test@example.com', name: 'Test User' };
+      const updateAccountDto: UpdateAccountDto = { balance: 3250000 };
+      const mockUser = {
+        id: 1,
+        email: 'teguhwin8@gmail.com',
+        name: 'Teguh Widodo',
+      };
       const mockRequest = { user: mockUser };
       const mockAccount = new AccountResponseDto({
         id: accountId,
         userId: 1,
-        balance: 2000,
+        balance: 3250000,
         user: mockUser,
       });
 
@@ -143,7 +159,11 @@ describe('AccountController', () => {
   describe('remove', () => {
     it('should delete an account', async () => {
       const accountId = 1;
-      const mockUser = { id: 1, email: 'test@example.com', name: 'Test User' };
+      const mockUser = {
+        id: 1,
+        email: 'teguhwin8@gmail.com',
+        name: 'Teguh Widodo',
+      };
       const mockRequest = { user: mockUser };
       const mockResponse = { message: 'Account deleted successfully' };
 
@@ -159,9 +179,13 @@ describe('AccountController', () => {
   describe('getBalance', () => {
     it('should return account balance', async () => {
       const accountId = 1;
-      const mockUser = { id: 1, email: 'test@example.com', name: 'Test User' };
+      const mockUser = {
+        id: 1,
+        email: 'teguhwin8@gmail.com',
+        name: 'Teguh Widodo',
+      };
       const mockRequest = { user: mockUser };
-      const mockBalance = { balance: 1500.5 };
+      const mockBalance = { balance: 5000000.0 };
 
       mockAccountService.getAccountBalance.mockResolvedValue(mockBalance);
 

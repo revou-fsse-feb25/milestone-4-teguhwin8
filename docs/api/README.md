@@ -14,26 +14,26 @@ This document provides comprehensive information about all available endpoints i
 The API uses JWT (JSON Web Token) for authentication with role-based access control. Include the token in the Authorization header:
 
 ```
-# Dokumentasi Referensi API
+# API Reference Documentation
 
 ## Overview
 
-Dokumen ini menyediakan informasi komprehensif tentang semua endpoint yang tersedia di Revo Bank API. API mengikuti prinsip RESTful dan menggunakan JSON untuk pertukaran data.
+This document provides comprehensive information about all available endpoints in the Revo Bank API. The API follows RESTful principles and uses JSON for data exchange.
 
 ## Base URL
 
 - **Development**: `http://localhost:3000`
-- **Production**: `https://your-domain.com/api` (belum di-deploy)
+- **Production**: `https://your-domain.com/api` (not yet deployed)
 
-## Status Dokumentasi Swagger
+## Swagger Documentation Status
 
-- ✅ **Swagger Decorators**: Semua endpoint sudah dilengkapi dengan dekorator OpenAPI
-- 🔄 **Swagger UI**: Sedang dalam pengembangan (belum dikonfigurasi di main.ts)
-- ✅ **Manual Documentation**: Dokumentasi lengkap tersedia di dokumen ini
+- ✅ **Swagger Decorators**: All endpoints are fully documented with OpenAPI decorators
+- ✅ **Swagger UI**: Configured and ready to use at `/api`
+- ✅ **Manual Documentation**: Complete documentation available in this document
 
-## Autentikasi
+## Authentication
 
-API menggunakan JWT (JSON Web Token) untuk autentikasi dengan role-based access control. Sertakan token di header Authorization:
+The API uses JWT (JSON Web Token) for authentication with role-based access control. Include the token in the Authorization header:
 
 ```
 
@@ -43,17 +43,17 @@ Authorization: Bearer <your-jwt-token>
 
 ### User Roles
 
-- **USER**: Nasabah bank reguler (role default)
-- **ADMIN**: Administrator bank dengan akses sistem
+- **USER**: Regular bank customer (default role)
+- **ADMIN**: Bank administrator with system access
 
-Untuk dokumentasi role detail, lihat [Dokumentasi RBAC](rbac-documentation.md)
+For detailed role documentation, see [RBAC Documentation](rbac-documentation.md)
 
 ### Token Lifecycle
 
-- **Expiration**: 7 hari (dapat dikonfigurasi)
-- **Refresh**: Saat ini belum diimplementasi (perlu re-login)
-- **Storage**: Client-side storage (localStorage/sessionStorage direkomendasikan)
-- **Role Claims**: Token termasuk user role untuk otorisasi
+- **Expiration**: 7 days (configurable)
+- **Refresh**: Currently not implemented (requires re-login)
+- **Storage**: Client-side storage (localStorage/sessionStorage recommended)
+- **Role Claims**: Token includes user role for authorization
 ```
 
 ### User Roles

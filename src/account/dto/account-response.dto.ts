@@ -18,7 +18,7 @@ export class AccountResponseDto {
 
   @ApiProperty({
     description: 'Current account balance',
-    example: 5000.5,
+    example: 0,
   })
   @Expose()
   balance: number;
@@ -42,8 +42,8 @@ export class AccountResponseDto {
     type: 'object',
     properties: {
       id: { type: 'number', example: 1 },
-      name: { type: 'string', example: 'John Doe' },
-      email: { type: 'string', example: 'john@example.com' },
+      name: { type: 'string', example: 'Teguh Widodo' },
+      email: { type: 'string', example: 'teguhwin8@gmail.com' },
     },
   })
   @Expose()

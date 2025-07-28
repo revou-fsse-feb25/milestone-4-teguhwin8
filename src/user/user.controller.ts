@@ -31,7 +31,7 @@ import {
 } from '@nestjs/swagger';
 
 @ApiTags('Users')
-@ApiBearerAuth()
+@ApiBearerAuth('JWT-auth')
 @Controller('user')
 @UseInterceptors(ClassSerializerInterceptor)
 @UseGuards(RolesGuard)

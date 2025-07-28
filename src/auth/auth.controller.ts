@@ -65,7 +65,7 @@ export class AuthController {
 
   @Post('register-admin')
   @Roles(Role.ADMIN)
-  @ApiBearerAuth()
+  @ApiBearerAuth('JWT-auth')
   @ApiOperation({ summary: 'Register a new admin user (Admin only)' })
   @ApiResponse({
     status: 201,

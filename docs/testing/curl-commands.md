@@ -28,9 +28,9 @@ curl -X GET "$BASE_URL/" \
 curl -X POST "$BASE_URL/auth/register" \
   -H "Content-Type: application/json" \
   -d '{
-    "email": "budi.santoso@gmail.com",
+    "email": "teguhwin8@gmail.com",
     "password": "password123",
-    "name": "Budi Santoso"
+    "name": "Teguh Widodo"
   }'
 
 # Save the access_token from response for next requests
@@ -41,8 +41,8 @@ curl -X POST "$BASE_URL/auth/register" \
 #   "expires_in": "7d",
 #   "user": {
 #     "id": 1,
-#     "email": "budi.santoso@gmail.com",
-#     "name": "Budi Santoso",
+#     "email": "teguhwin8@gmail.com",
+#     "name": "Teguh Widodo",
 #     "role": "USER",
 #     "createdAt": "2025-01-27T10:00:00.000Z"
 #   }
@@ -56,7 +56,7 @@ curl -X POST "$BASE_URL/auth/register" \
 curl -X POST "$BASE_URL/auth/login" \
   -H "Content-Type: application/json" \
   -d '{
-    "email": "budi.santoso@gmail.com",
+    "email": "teguhwin8@gmail.com",
     "password": "password123"
   }'
 
@@ -86,8 +86,8 @@ curl -X GET "$BASE_URL/user/profile" \
 # Expected response:
 # {
 #   "id": 1,
-#   "email": "budi.santoso@gmail.com",
-#   "name": "Budi Santoso",
+#   "email": "teguhwin8@gmail.com",
+#   "name": "Teguh Widodo",
 #   "createdAt": "2025-01-27T10:00:00.000Z"
 # }
 ```
@@ -200,7 +200,7 @@ curl -X GET "$BASE_URL/transactions/1"
 curl -X POST "$BASE_URL/auth/login"
   -H "Content-Type: application/json"
   -d '{
-    "email": "budi.santoso@gmail.com",
+    "email": "teguhwin8@gmail.com",
     "password": "password123"
   }'
 
@@ -249,9 +249,9 @@ curl -X GET "$BASE_URL/user/profile" \
 curl -X POST "$BASE_URL/auth/register" \
   -H "Content-Type: application/json" \
   -d '{
-    "email": "budi.santoso@gmail.com",
+    "email": "teguhwin8@gmail.com",
     "password": "password123",
-    "name": "Budi Santoso Duplicate"
+    "name": "Teguh Widodo Duplicate"
   }'
 
 # Expected: 409 Conflict
@@ -264,7 +264,7 @@ curl -X POST "$BASE_URL/auth/register" \
 curl -X POST "$BASE_URL/auth/login" \
   -H "Content-Type: application/json" \
   -d '{
-    "email": "budi.santoso@gmail.com",
+    "email": "teguhwin8@gmail.com",
     "password": "wrongpassword"
   }'
 
